@@ -1,0 +1,53 @@
+{% extends "User/user-standard.html" %}
+{% load static %}
+
+{% block title %}Adopta!{% endblock %}
+
+{% block content-header %}Adoptar{% endblock %}
+
+{% block content %}
+
+<div class="login-box">
+        <div class="login-logo">
+            <strong>Cholito</strong>
+        </div>
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        <!-- /.login-logo -->
+        <div class="login-box-body">
+            <p class="login-box-msg">
+                Elige el tipo de usuario a registrar.
+            </p>
+
+            
+                
+                <div class="row">
+
+                    <div class="col-xs-6">
+                        <a href="{% url 'signup' %}" class="pull-right btn btn-primary btn-block btn-flat">Usuario</a>
+                    </div>
+                    <div class="col-xs-6">
+          
+                        <a href="{% url 'signup' %}" class="pull-right btn btn-primary btn-block btn-flat">ONG</a>
+                    </div>
+                    <br>
+                    <!-- /.col -->
+
+                </div>
+            <br>
+            <div>
+                <a href="{% url 'signup' %}" class="btn btn-primary btn-block btn-flat">Municipalidad</a>
+            </div>
+
+
+        </div>
+        <!-- /.login-box-body -->
+    </div>
+    <!-- /.login-box -->
+
+{% endblock %}

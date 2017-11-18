@@ -32,6 +32,12 @@ class LogInView(TemplateView):
     def get(self, request, **kwargs):
         return render(request, self.template_name, context=self.context)
 
+class ChooseUserReg(TemplateView):
+    template_name = 'choose-user-reg.html'
+
+    def get(self, request, **kwargs):
+        return render(request, self.template_name)
+
 
 class SignUpView(View):
     user_form = SignUpForm(initial={'username': 'dummy'}, prefix='user')
