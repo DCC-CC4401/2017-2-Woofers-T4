@@ -30,6 +30,47 @@
                         infoWindow.setPosition(pos);
                         infoWindow.setContent('Location found.');
                         map.setCenter(pos);
+                        var c = "{{ c_user }}";
+                        var c_users = JSON.parse(c);
+                        var o = "{{ ongs }}";
+                        var ongs = JSON.parse(o);
+                        var a = "{{ animals }}";
+                        var animals = JSON.parse(a);
+                        var f = "{{ favoritos }}";
+                        var favoritos = JSON.parse(f);
+                        var arrayLength = ongs.length;
+                        for (var i = 0; i < arrayLength; i++) {
+                            var unaONG = ongs[i];
+                            var fav = false;
+                            var length = favoritos.length;
+                            for(var j = 0; j < length; j++) {
+                                if(unaONG[i] == favoritos[j]) {
+                                    fav = true;
+                                    break;
+                                }
+                            }
+                            if(fav) {
+                                var imageUrl = "https://raw.githubusercontent.com/AzcarGabriel/cosas/master/star.png";
+                                var size = new google.maps.Size(50, 50);
+                            }
+                            var markerImage = {
+                                url: imageUrl,
+                                scaledSize: size,
+                            };
+                            var myLatLng = {lat: unaONG[1], lng: unaONG[2]};
+                            var marker = new google.maps.Marker({
+                                position: myLatLng,
+                                map: map,
+                                title: unaONG[0].toString(),
+                                icon: markerImage
+                            });
+                            marker.addListener('click', (function(ongs) {
+                                return function(){
+                                    var url = "{% url 'fichaVendedor' id %}";
+                                    location.href = url + vendedores[vendedor];
+                                }
+                            })(vendedor));
+                        }
                     }, function () {
                         handleLocationError(true, infoWindow, map.getCenter());
                     });

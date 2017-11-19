@@ -24,8 +24,8 @@ class ComplaintForm(forms.ModelForm):
             'color': forms.TextInput(attrs={'id': 'color-input'}),
             'gender': forms.RadioSelect(attrs={'id': "gender-input"}),
             'wounded': forms.RadioSelect(attrs={'id': "wounded-input"}),
-            'lat': forms.HiddenInput(attrs={'id': "lat-input"}),
-            'lng': forms.HiddenInput(attrs={'id': "lng-input"}),
+            'lat': forms.HiddenInput(),
+            'lng': forms.HiddenInput(),
             'directions': forms.HiddenInput(),
             'description': forms.TextInput(attrs={'id': 'description-input'}),
             'municipality': forms.Select(attrs={'id': 'municipality-input'}),
@@ -37,6 +37,6 @@ class ComplaintForm(forms.ModelForm):
 
 
 class ImageForm(forms.Form):
-    complaint_image = forms.ImageField(
+    complaint_image = forms.ImageField(required=False,
         widget=forms.FileInput(
-            attrs={'id': 'image-input', 'class': "form-control", 'placeholder': "Agrega una imagen de tu denuncia"}))
+            attrs={'id': 'image-input', 'placeholder': "Agrega una imagen de tu denuncia"}))

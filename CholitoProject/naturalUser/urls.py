@@ -13,6 +13,8 @@ urlpatterns = [
     url(r'^user/$', UserDetail.as_view(), name='user-update'),
     url(r'^user-ong-in/$', OngInViewTemplate.as_view(), name='user-ong-in'),
     url(r'^user-ong-out/$', OngOutViewTemplate.as_view(), name='user-ong-out'),
+    url(r'^show/ong/$', ONGListView.as_view(), name='show-ong'),
+    url(r'^show/animals/$', AnimalListView.as_view(), name='show-animals'),
 ]
 
 if settings.DEBUG:

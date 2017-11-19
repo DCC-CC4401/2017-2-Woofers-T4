@@ -19,3 +19,12 @@ class NaturalUser(models.Model):
 
     def get_index(self, request, context=None):
         return render(request, 'index.html', context=context)
+
+
+class Favoritos(models.Model):
+    id = models.AutoField(primary_key=True)
+    idPersona = models.IntegerField()
+    idONG = models.IntegerField()
+
+    def __str__(self):
+        return self.idPersona

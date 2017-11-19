@@ -22,7 +22,6 @@ class ComplaintView(View):
 
 
 class ComplaintSendView(View):
-
     def post(self, request, **kwargs):
         form = ComplaintForm(request.POST, prefix='complaint')
         image_form = ImageForm(request.POST, request.FILES, prefix='image')
@@ -31,8 +30,10 @@ class ComplaintSendView(View):
             complaint.status = 1
             complaint.save()
             if image_form.is_valid():
-                ComplaintImage.objects.create(
-                    complaint=complaint, image=image_form.cleaned_data.get('complaint_image'))
+                image_ = image_form.cleaned_data.get('complaint_image')
+                if image_ is not None:
+                    ComplaintImage.objects.create(
+                        complaint=complaint, image=image_)
 
         return redirect('/')
 

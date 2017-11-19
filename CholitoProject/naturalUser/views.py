@@ -1,3 +1,6 @@
+import json
+from django.core.serializers.json import DjangoJSONEncoder
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMixin
@@ -8,7 +11,8 @@ from django.views.generic import TemplateView
 from CholitoProject.userManager import get_user_index
 from complaint.models import AnimalType
 from naturalUser.forms import SignUpForm, AvatarForm
-from naturalUser.models import NaturalUser
+from naturalUser.models import NaturalUser, Favoritos
+from ong.models import ONG
 
 
 class IndexView(TemplateView):
@@ -19,6 +23,8 @@ class IndexView(TemplateView):
         self.context['c_user'] = c_user
         animals = AnimalType.objects.all()
         self.context['animals'] = animals
+        ongs = ONG.objects.all()
+        self.context['ongs'] = ongs
         if c_user is None:
             return render(request, 'index.html', context=self.context)
         return c_user.get_index(request, context=self.context)
