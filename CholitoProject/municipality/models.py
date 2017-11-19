@@ -9,6 +9,7 @@ class Municipality(models.Model):
     lng = models.DecimalField(max_digits=9, decimal_places=6)
     directions = models.TextField(max_length=200, null=True)
     avatar = models.ImageField(upload_to='municipality/avatar/')
+    favorites = models.IntegerField(default=0)
 
     def __str__(self):
         return self.name
