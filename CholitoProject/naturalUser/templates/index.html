@@ -66,10 +66,9 @@
                             });
                             marker.addListener('click', (function(ongs) {
                                 return function(){
-                                    var url = "{% url 'fichaVendedor' id %}";
-                                    location.href = url + vendedores[vendedor];
+                                    var url = "{% url 'show-ong' %}";
                                 }
-                            })(vendedor));
+                            })(ongs));
                         }
                     }, function () {
                         handleLocationError(true, infoWindow, map.getCenter());
