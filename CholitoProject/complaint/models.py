@@ -59,6 +59,33 @@ class Complaint(models.Model):
     def __str__(self):
         return "Complaint #" + str(self.pk)
 
+    @staticmethod
+    def len_case():
+        cases = {
+            "Abandonado en la calle":0,
+            "Exposición a temperaturas extremas":0,
+            "Falta de agua":0,
+            "Falta de comida":0,
+            "Violencia":0,
+            "Venta Ambulante":0
+        }
+        queries = Complaint.objects.all().values()
+        for index in range(0,len(queries)):
+            if queries[index]['case'] == 1:
+                cases["Abandonado en la calle"] += 1
+            elif queries[index]['case'] == 2:
+                cases["Exposición a temperaturas extremas"] += 1
+            elif queries[index]['case'] == 3:
+                cases["Falta de agua"] += 1
+            elif queries[index]['case'] == 4:
+                cases["Falta de comida"] += 1
+            elif queries[index]['case'] == 5:
+                cases["Violencia"] += 1
+            elif queries[index]['case'] == 6:
+                cases["Venta ambulante"] += 1
+        return cases
+
+
 
 class ComplaintImage(models.Model):
     image = models.ImageField(upload_to='complaints/', blank=True)
