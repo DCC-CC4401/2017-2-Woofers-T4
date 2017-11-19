@@ -13,7 +13,7 @@ from CholitoProject.userManager import get_user_index
 from animals.models import Animal
 from complaint.models import AnimalType
 from naturalUser.forms import SignUpForm, AvatarForm
-from naturalUser.models import NaturalUser, Favoritos
+from naturalUser.models import NaturalUser, Favorites
 from ong.models import ONG
 
 
