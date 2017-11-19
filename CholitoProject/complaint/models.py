@@ -40,8 +40,8 @@ class Complaint(models.Model):
 
     description = models.TextField(max_length=1000)
     case = models.SmallIntegerField(choices=COMPLAINT_OPTIONS)
-    lat = models.DecimalField(max_digits=9, decimal_places=6, null=True)
-    lng = models.DecimalField(max_digits=9, decimal_places=6, null=True)
+    lat = models.DecimalField(max_digits=16, decimal_places=13, null=True)
+    lng = models.DecimalField(max_digits=16, decimal_places=13, null=True)
     directions = models.TextField(max_length=200, null=True)
     status = models.SmallIntegerField(choices=COMPLAINT_STATUS)
     animal_type = models.ForeignKey(AnimalType)
