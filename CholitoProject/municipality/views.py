@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin,\
     LoginRequiredMixin
 from complaint.models import Complaint
 from CholitoProject.userManager import get_user_index
+from municipality.fusioncharts import FusionCharts
 
 
 class IndexView(PermissionRequiredMixin, LoginRequiredMixin, View):
@@ -55,3 +56,62 @@ class UserDetail(PermissionRequiredMixin, LoginRequiredMixin, View):
             c_user.municipality.avatar = request.FILES['avatar']
             c_user.municipality.save()
         return redirect('/')
+
+def chart_cases(request):
+    data = Complaint.len_case()
+    # Create an object for the pie3d chart using the FusionCharts class constructor
+    pie3d = FusionCharts("pie3d", "ex2", "100%", "400", "chart-1", "json",
+                         # The data is passed as a string in the `dataSource` as parameter.
+                         """{
+                             "chart": {
+                                 "caption": "Casos de Denuncia distribucion por tipos",
+                                 "subcaption": "Municipalidad de Santiago",
+                                 "startingangle": "120",
+                                 "showlabels": "0",
+                                 "showlegend": "1",
+                                 "enablemultislicing": "0",
+                                 "slicingdistance": "15",
+                                 "showpercentvalues": "1",
+                                 "showpercentintooltip": "0",
+                                 "plottooltext": "Tipo de Denuncia : $label Total visit : $datavalue",
+                                 "theme": "ocean"
+                             },
+                             "data": [
+                                 {"label": "Abandonado en la calle", "value": """ + str(
+                             data["Abandonado en la calle"]) + """},
+                {"label": "Exposicion a temperaturas extremas", "value": """ + str(
+                             data["Exposición a temperaturas extremas"]) + """},
+                {"label": "Falta de Agua", "value": """ + str(data["Falta de agua"]) + """},
+                {"label": "Falta de Comida", "value": """ + str(data["Falta de comida"]) + """},
+                {"label": "Violencia", "value": """ + str(data["Violencia"]) + """},
+                {"label": "Venta Ambulante", "value": """ + str(data["Venta Ambulante"]) + """}
+
+            ]
+    }""")
+    return render(request, 'muni_statistics.html', {'output': pie3d.render()})
+
+
+def chart_status(request):
+    data = Complaint.status_last_week()
+    # Create an object for the column2d chart using the FusionCharts class constructor
+    column2d = FusionCharts("column2d", "ex1", "1000", "600", "chart-1", "json",
+                            # The data is passed as a string in the `dataSource` as parameter.
+                            """{  
+                               "chart":{  
+                                   "caption":"Frecuencia de denuncias por estado",
+                                   "subCaption":"En los ultimos 7 dias",
+                                   "theme":"ocean"
+                               },
+                               "data": [
+                                   {"label": "Reportada", "value": """ + str(data["Reportada"]) + """},
+                {"label": "Consolidada", "value": """ + str(
+                                data["Consolidada"]) + """},
+                {"label": "Verificada", "value": """ + str(data["Verificada"]) + """},
+                {"label": "Cerrada", "value": """ + str(data["Cerrada"]) + """},
+                {"label": "Desechada", "value": """ + str(data["Desechada"]) + """}
+
+            ]
+        }""")
+
+    # returning complete JavaScript and HTML code, which is used to generate chart in the browsers.
+    return render(request, 'muni_statistics.html', {'output': column2d.render()})
