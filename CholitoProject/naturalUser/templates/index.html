@@ -7,28 +7,127 @@
 
 {% block content %}
 
-        {% if user.is_authenticated %}
-            <img src="{% static 'images/fav.jpg' %}" usemap="#image-map"/>
-            <map name="image-map">
-                <area target="" alt="ong" title="ong" href="{% url 'user-ong-in' %}" coords="644,317,545,198"
-                      shape="rect">
-                <area target="" alt="ong" title="ong" href="{% url 'user-ong-in' %}" coords="693,129,828,252"
-                      shape="rect">
-                <area target="" alt="ong" title="ong" href="{% url 'user-ong-in' %}" coords="469,502,602,612"
-                      shape="rect">
-            </map>
-        {% else %}
-            <img src="{% static 'images/noFav.jpg' %}" usemap="#image-map"/>
+    {% if user.is_authenticated %}
+        <div id="googleMap" style="width:100%;height:640px;"></div>
+        <script>
+            function myMap() {
+                var mapProp = {
+                    center: new google.maps.LatLng(-33.457394, -70.664601),
+                    zoom: 15
+                };
+                var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+                var infoWindow = new google.maps.InfoWindow({map: map});
+                var geoMarker = new google.maps.Marker();
+                geoMarker.setMap(map);
+                // Try HTML5 geolocation.
+                if (navigator.geolocation) {
+                    navigator.geolocation.watchPosition(function (position) {
+                        var pos = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+                        geoMarker.setPosition(pos);
+                        infoWindow.setPosition(pos);
+                        infoWindow.setContent('Location found.');
+                        map.setCenter(pos);
+                        var c = "{{ c_user }}";
+                        var c_users = JSON.parse(c);
+                        var o = "{{ ongs }}";
+                        var ongs = JSON.parse(o);
+                        var a = "{{ animals }}";
+                        var animals = JSON.parse(a);
+                        var f = "{{ favoritos }}";
+                        var favoritos = JSON.parse(f);
+                        var arrayLength = ongs.length;
+                        for (var i = 0; i < arrayLength; i++) {
+                            var unaONG = ongs[i];
+                            var fav = false;
+                            var length = favoritos.length;
+                            for(var j = 0; j < length; j++) {
+                                if(unaONG[i] == favoritos[j]) {
+                                    fav = true;
+                                    break;
+                                }
+                            }
+                            if(fav) {
+                                var imageUrl = "https://raw.githubusercontent.com/AzcarGabriel/cosas/master/star.png";
+                                var size = new google.maps.Size(50, 50);
+                            }
+                            var markerImage = {
+                                url: imageUrl,
+                                scaledSize: size,
+                            };
+                            var myLatLng = {lat: unaONG[1], lng: unaONG[2]};
+                            var marker = new google.maps.Marker({
+                                position: myLatLng,
+                                map: map,
+                                title: unaONG[0].toString(),
+                                icon: markerImage
+                            });
+                            marker.addListener('click', (function(ongs) {
+                                return function(){
+                                    var url = "{% url 'show-ong' %}";
+                                }
+                            })(ongs));
+                        }
+                    }, function () {
+                        handleLocationError(true, infoWindow, map.getCenter());
+                    });
+                } else {
+                    // Browser doesn't support Geolocation
+                    handleLocationError(false, infoWindow, map.getCenter());
+                }
+            }
 
-            <map name="image-map">
-                <area target="" alt="ong" title="ong" href="{% url 'user-ong-out' %}" coords="830,258,696,117"
-                      shape="rect">
-                <area target="" alt="ong" title="ong" href="{% url 'user-ong-out' %}" coords="551,204,643,307"
-                      shape="rect">
-                <area target="" alt="ong" title="ong" href="{% url 'user-ong-out' %}" coords="469,505,604,614"
-                      shape="rect">
-            </map>
-        {% endif %}
+            function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+                infoWindow.setPosition(pos);
+                infoWindow.setContent(browserHasGeolocation ?
+                    'Error: The Geolocation service failed.' :
+                    'Error: Your browser doesn\'t support geolocation.');
+            }
+        </script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDoAvr9hMsVh7niRHRZLhJ_usowVZ4x2HE&callback=myMap"></script>
+    {% else %}
+        <div id="googleMap" style="width:100%;height:640px;"></div>
+        <script>
+            function myMap() {
+                var mapProp = {
+                    center: new google.maps.LatLng(-33.457394, -70.664601),
+                    zoom: 15
+                };
+                var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+                var infoWindow = new google.maps.InfoWindow({map: map});
+                var geoMarker = new google.maps.Marker();
+                geoMarker.setMap(map);
+                // Try HTML5 geolocation.
+                if (navigator.geolocation) {
+                    navigator.geolocation.watchPosition(function (position) {
+                        var pos = {
+                            lat: position.coords.latitude,
+                            lng: position.coords.longitude
+                        };
+                        geoMarker.setPosition(pos);
+                        infoWindow.setPosition(pos);
+                        infoWindow.setContent('Location found.');
+                        map.setCenter(pos);
+                    }, function () {
+                        handleLocationError(true, infoWindow, map.getCenter());
+                    });
+                } else {
+                    // Browser doesn't support Geolocation
+                    handleLocationError(false, infoWindow, map.getCenter());
+                }
+            }
+
+            function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+                infoWindow.setPosition(pos);
+                infoWindow.setContent(browserHasGeolocation ?
+                    'Error: The Geolocation service failed.' :
+                    'Error: Your browser doesn\'t support geolocation.');
+            }
+        </script>
+        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDoAvr9hMsVh7niRHRZLhJ_usowVZ4x2HE&callback=myMap"></script>
+    {% endif %}
 
 {% endblock %}
 

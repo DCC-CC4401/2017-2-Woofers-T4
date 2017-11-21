@@ -7,4 +7,6 @@ urlpatterns = [
     url(r'^send', ComplaintSendView.as_view(), name='make-complaint'),
     url(r'^(?P<pk>\d+)/$', ComplaintRenderView.as_view(), name='see-complaint'),
     url(r'^act/(?P<pk>\d+)/$', ComplaintActState.as_view(), name='act-complaint'),
+    url(r'^cases/$', chart_cases, name='demo1'),
+    url(r'^status/$', chart_status, name='demo2'),
 ]

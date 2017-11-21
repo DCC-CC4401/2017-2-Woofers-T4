@@ -1,4 +1,6 @@
+import datetime
 from django.db import models
+from django.utils import timezone
 
 from municipality.models import Municipality
 
@@ -31,29 +33,85 @@ class Complaint(models.Model):
     GENDER_OPTIONS = (
         (1, "Macho"),
         (2, "Hembra"),
+        (3, "Desconocido")
     )
 
     WOUND_OPTIONS = (
-        (True, "Sí"),
-        (False, "No"),
+        (1, "Sí"),
+        (2, "No"),
+        (3, "Desconocido")
     )
 
-    description = models.TextField(max_length=1000)
-    case = models.SmallIntegerField(choices=COMPLAINT_OPTIONS)
-    lat = models.DecimalField(max_digits=9, decimal_places=6, null=True)
-    lng = models.DecimalField(max_digits=9, decimal_places=6, null=True)
-    directions = models.TextField(max_length=200, null=True)
-    status = models.SmallIntegerField(choices=COMPLAINT_STATUS)
+    description = models.TextField(max_length=1000, blank=True, null=True)
+    case = models.SmallIntegerField(choices=COMPLAINT_OPTIONS, default=1)
+    lat = models.DecimalField(max_digits=9, decimal_places=6)
+    lng = models.DecimalField(max_digits=9, decimal_places=6)
+    directions = models.TextField(max_length=200)
+    status = models.SmallIntegerField(choices=COMPLAINT_STATUS, default=1)
     animal_type = models.ForeignKey(AnimalType)
-    gender = models.SmallIntegerField(choices=GENDER_OPTIONS)
-    wounded = models.BooleanField(choices=WOUND_OPTIONS)
-    color = models.TextField(max_length=50)
+    gender = models.SmallIntegerField(choices=GENDER_OPTIONS, default=3)
+    wounded = models.SmallIntegerField(choices=WOUND_OPTIONS, default=3)
+    color = models.TextField(max_length=50, blank=True, null=True)
+    sent = models.DateTimeField(default=timezone.now)
+
+    # TODO: required?
     municipality = models.ForeignKey(Municipality)
 
     def __str__(self):
         return "Complaint #" + str(self.pk)
 
+    @staticmethod
+    def len_case():
+        cases = {
+            "Abandonado en la calle":0,
+            "Exposición a temperaturas extremas":0,
+            "Falta de agua":0,
+            "Falta de comida":0,
+            "Violencia":0,
+            "Venta Ambulante":0
+        }
+        queries = Complaint.objects.all().values()
+        for index in range(0,len(queries)):
+            if queries[index]['case'] == 1:
+                cases["Abandonado en la calle"] += 1
+            elif queries[index]['case'] == 2:
+                cases["Exposición a temperaturas extremas"] += 1
+            elif queries[index]['case'] == 3:
+                cases["Falta de agua"] += 1
+            elif queries[index]['case'] == 4:
+                cases["Falta de comida"] += 1
+            elif queries[index]['case'] == 5:
+                cases["Violencia"] += 1
+            elif queries[index]['case'] == 6:
+                cases["Venta ambulante"] += 1
+        return cases
+
+    @staticmethod
+    def status_last_week():
+        status = {
+            "Reportada":0,
+            "Consolidada":0,
+            "Verificada":0,
+            "Cerrada":0,
+            "Desechada":0
+        }
+        queries = Complaint.objects.all().values()
+        today = datetime.datetime.now().day
+        for index in range(0, len(queries)):
+            day_comp = queries[index]['sent'].day
+            if day_comp > today-7 and day_comp <= today:
+                if queries[index]['status'] == 1:
+                    status["Reportada"] += 1
+                elif queries[index]['status'] == 2:
+                    status["Consolidada"] += 1
+                elif queries[index]['status'] == 3:
+                    status["Verificada"] += 1
+                elif queries[index]['status'] == 4:
+                    status["Cerrada"] += 1
+                elif queries[index]['status'] == 5:
+                    status["Desechada"] += 1
+        return status
 
 class ComplaintImage(models.Model):
-    image = models.ImageField(upload_to='complaints/')
+    image = models.ImageField(upload_to='complaints/', blank=True)
     complaint = models.ForeignKey('Complaint', on_delete=models.CASCADE)

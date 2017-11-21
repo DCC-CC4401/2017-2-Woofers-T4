@@ -1,8 +1,10 @@
-from django.views import View
-from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from CholitoProject.userManager import get_user_index
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
+from django.views import View
+from django.views.decorators.csrf import csrf_exempt
+
+from CholitoProject.userManager import get_user_index
 
 
 def home(request):
@@ -10,8 +12,9 @@ def home(request):
 
 
 # TODO: redirect to correct template
-class AuthView(View):
 
+class AuthView(View):
+    @csrf_exempt
     def post(self, request, **kwargs):
         username = request.POST.get('email')
         password = request.POST.get('password')
@@ -29,7 +32,6 @@ class AuthView(View):
 
 
 class LogOutView(View):
-
     def get(self, request, **kwargs):
         logout(request)
         return redirect('/')
