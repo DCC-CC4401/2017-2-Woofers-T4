@@ -1,3 +1,4 @@
+import datetime
 from django.db import models
 from django.utils import timezone
 
@@ -85,7 +86,31 @@ class Complaint(models.Model):
                 cases["Venta ambulante"] += 1
         return cases
 
-
+    @staticmethod
+    def status_last_week():
+        status = {
+            "Reportada":0,
+            "Consolidada":0,
+            "Verificada":0,
+            "Cerrada":0,
+            "Desechada":0
+        }
+        queries = Complaint.objects.all().values()
+        today = datetime.datetime.now().day
+        for index in range(0, len(queries)):
+            day_comp = queries[index]['sent'].day
+            if day_comp > today-7 and day_comp <= today:
+                if queries[index]['status'] == 1:
+                    status["Reportada"] += 1
+                elif queries[index]['status'] == 2:
+                    status["Consolidada"] += 1
+                elif queries[index]['status'] == 3:
+                    status["Verificada"] += 1
+                elif queries[index]['status'] == 4:
+                    status["Cerrada"] += 1
+                elif queries[index]['status'] == 5:
+                    status["Desechada"] += 1
+        return status
 
 class ComplaintImage(models.Model):
     image = models.ImageField(upload_to='complaints/', blank=True)
