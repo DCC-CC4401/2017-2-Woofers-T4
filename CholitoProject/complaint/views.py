@@ -12,7 +12,7 @@ from complaint.fusioncharts import FusionCharts
 
 class ComplaintView(View):
     form = ComplaintForm(
-        initial={'directions': "beauchef"}, prefix='complaint')
+        initial={'lat': 20, 'lng':20, 'directions': "beauchef"}, prefix='complaint')
     image_form = ImageForm(prefix='image')
     animals = AnimalType.objects.all()
     context = {'form': form, 'image_form': image_form, 'animals': animals}
