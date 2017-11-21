@@ -1,7 +1,8 @@
 from django.db import models
 
-from complaint.models import Complaint, AnimalType
+from complaint.models import AnimalType
 from naturalUser.models import NaturalUser
+from ong.models import ONG
 
 
 class AnimalImage(models.Model):
@@ -16,12 +17,13 @@ class Animal(models.Model):
     )
 
     name = models.TextField(max_length=100)
-    gender = models.SmallIntegerField(choices=GENDER_OPTIONS)
+    sexo = models.SmallIntegerField(choices=GENDER_OPTIONS)
     description = models.TextField(max_length=1000)
     animal_type = models.ForeignKey(AnimalType)
     color = models.TextField(max_length=50)
     estimated_age = models.PositiveSmallIntegerField()
     days_in_adoption = models.IntegerField()
+    ong = models.ForeignKey(ONG)
 
     # TODO: for now
     def __str__(self):
